@@ -10,24 +10,22 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static net.coder.io.res.Values.DEFAULT_COLOUR;
+import static net.coder.io.res.Values.DEFAULT_FONT;
 
 public class FileCreator {
 
-    private final JFrame frame = new JFrame("File folder creator");
-
-    public static Font myFont = new Font("Britannic", Font.PLAIN, 12);
-
-    public static Color myColour = new Color(238, 238, 238);
-
-    public static final String FILE_PATH = "C:\\Users\\" + System.getenv("USERNAME") + "\\Desktop\\YouTube\\";
-
-    JTextField projectNameField;
-    String inputText;
     public static JLabel infoLabel = new JLabel("Enter a project name and click \"Create\"");
 
+    private final JFrame frame = new JFrame("File folder creator");
+    JTextField projectNameField;
+
+    JPanel panel = new JPanel(null);
+
+    String inputText;
+
     public FileCreator() {
-        JPanel panel = new JPanel(null);
-        panel.setPreferredSize(new Dimension(450, 200));
+        panel.setPreferredSize(new Dimension(450, 175));
         panel.setFocusable(true);
 
         ImageIcon icon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("/net/coder/io/res/icon.png")));
@@ -41,9 +39,10 @@ public class FileCreator {
         frame.pack();
 
         JButton createButton = new JButton("Create");
-        createButton.setBounds(180, 70, 80, 20);
-        createButton.setFont(myFont);
-        createButton.setBackground(myColour);
+        createButton.setBounds(260, 145, 80, 20);
+        createButton.setFocusable(false);
+        createButton.setFont(DEFAULT_FONT);
+        createButton.setBackground(DEFAULT_COLOUR);
 
         projectNameField = new JTextField("Project name here");
         projectNameField.setFont(changeMyFontSize(13));
@@ -54,9 +53,10 @@ public class FileCreator {
         infoLabel.setBounds(70, 120, 310, 30);
 
         JButton pathButton = new JButton("Select folder");
-        pathButton.setBounds(180, 100, 80, 20);
+        pathButton.setBounds(350, 145, 80, 20);
         pathButton.setFont(changeMyFontSize(8));
-        pathButton.setBackground(myColour);
+        pathButton.setFocusable(false);
+        pathButton.setBackground(DEFAULT_COLOUR);
         pathButton.addActionListener(new FolderChooser() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,7 +71,8 @@ public class FileCreator {
                 infoLabel.setText("Type something or I won't create anything");
             } else {
                 createElements(inputText, FolderChooser.getPath().getLast());
-                infoLabel.setText("I created project \"" + inputText + "\"");
+                frame.setTitle("I created project \"" + inputText + "\"");
+                infoLabel.setVisible(false);
             }
         });
 
@@ -82,6 +83,10 @@ public class FileCreator {
         panel.addKeyListener(new MyKeyAdapter());
 
         frame.setVisible(true);
+    }
+
+    public static Font changeMyFontSize(int size) {
+        return new Font("Trebuchet MS", Font.PLAIN, size);
     }
 
     private void createElements(String projectFolderName, String folderPath) {
@@ -115,31 +120,33 @@ public class FileCreator {
         }
     }
 
-    public static Font changeMyFontSize(int size) {
-        return new Font("Britannic", Font.PLAIN, size);
+    public void close() {
+        frame.dispose();
     }
 
-    private class MyKeyAdapter extends KeyAdapter{
+    private class MyKeyAdapter extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() != KeyEvent.VK_ENTER) {
                 return;
             }
+
             inputText = projectNameField.getText();
+
             if (inputText.isEmpty() || inputText.isBlank()) {
                 System.out.println("Empty");
                 infoLabel.setText("Type something or I won't create anything");
-            } else if (inputText.endsWith(".")){
+            } else if (inputText.endsWith(".")) {
+                System.out.println("Folder name ends with a full stop");
                 infoLabel.setText("Don't end folder name with a symbol please!");
             } else {
                 createElements(inputText, FolderChooser.getPath().getLast());
-                infoLabel.setText("I created project \"" + inputText + "\"");
+                frame.setTitle("I created project \"" + inputText + "\"");
+                infoLabel.setVisible(false);
+                panel.revalidate();
+                panel.repaint();
             }
         }
-    }
-
-    public void close(){
-        frame.dispose();
     }
 }

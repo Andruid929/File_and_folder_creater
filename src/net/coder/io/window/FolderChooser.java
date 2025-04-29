@@ -1,8 +1,9 @@
 package net.coder.io.window;
 
+import net.coder.io.res.Values;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -18,18 +19,18 @@ public abstract class FolderChooser implements ActionListener {
 
     public FolderChooser(){
         label = FileCreator.infoLabel;
-        paths.add(FileCreator.FILE_PATH);
+        paths.add(Values.FILE_PATH);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
         File folderPath;
-        if (savedFilePath.exists() && !getSavedPath().equals(FileCreator.FILE_PATH) && !getSavedPath().isEmpty()) {
+        if (savedFilePath.exists() && !getSavedPath().equals(Values.FILE_PATH) && !getSavedPath().isEmpty()) {
             folderPath = new File(getSavedPath());
         } else {
-            savePath(FileCreator.FILE_PATH);
-            folderPath = new File(FileCreator.FILE_PATH);
+            savePath(Values.FILE_PATH);
+            folderPath = new File(Values.FILE_PATH);
         }
         if (!e.getActionCommand().equals("Select folder")) {
             return;
@@ -86,7 +87,7 @@ public abstract class FolderChooser implements ActionListener {
             if (savedFilePath.exists()) {
                 return reader.readLine();
             } else
-                return FileCreator.FILE_PATH;
+                return Values.FILE_PATH;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
